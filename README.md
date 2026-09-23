@@ -1,30 +1,25 @@
 # Administrador de servicios
-
-Este proyecto está hecho con Node.js. He creado una clase llamada ServiceManager para gestionar los servicios de un sistema de turnos y reservas.
-
-Permite consultar, agregar, modificar y eliminar servicios.
+Este proyecto está hecho con Node.js y express para gestionar los servicios de un sistema de turnos y reservas.
+La API permite consultar, agregar, modificar y eliminar servicios.
 
 ## Instalación
-
 Para instalar las dependencias, ejecuta:
-
 npm install
 
 ## Cómo ejecutar el proyecto
-
 Primero, crea un archivo .env en la carpeta principal con estas variables:
 
 PORT=8080
 NODE_ENV=development
 
+Hay incluido un archivo .env.example como referencia.
 Después, ejecuta:
 
-node src/app.js
+npm start
+El servidor se ejecuta en:  http://localhost:8080
 
 ## Servicios
-
 Los servicios están definidos inicialmente en src/data/services.json.
-
 Cada servicio tiene estos datos:
 
 * id: identificador del servicio.
@@ -35,34 +30,26 @@ Cada servicio tiene estos datos:
 * category: categoría.
 * available: indica si está disponible.
 
-## Métodos de ServiceManager
+## Endpoints
+GET /api/services
+Devuelve todos los servicios.
+También permite filtrar por categoría y disponibilidad:
 
-- Consultar todos los servicios:
+GET /api/services?category=Manicura
 
-manager.getServices();
+GET /api/services?available=true
 
-- Buscar un servicio por su ID:
+GET /api/services/:sid
+Devuelve un servicio por su ID.
 
-manager.getServiceById(1);
+POST /api/services
+Crea un nuevo servicio. El ID se genera automáticamente.
 
-- Agregar un servicio:el ID se genera automáticamente.
+PUT /api/services/:sid
+Actualiza un servicio existente. El ID no se puede modificar.
 
-manager.addService({
-  name: "Masaje facial",
-  description: "Masaje relajante del rostro",
-  duration: 30,
-  price: 30,
-  category: "Facial",
-  available: true
-});
-
-- Modificar un servicio:
-
-manager.updateService(1, { price: 22 });
-
-- Eliminar un servicio:
-
-manager.deleteService(1);
+DELETE /api/services/:sid
+Elimina un servicio por su ID.
 
 Los cambios se realizan en memoria, por lo que al volver a ejecutar el proyecto se cargan de nuevo los servicios del archivo JSON.
 
