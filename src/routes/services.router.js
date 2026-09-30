@@ -5,9 +5,9 @@ const router = Router();
 const manager = new ServiceManager();
 
 
-router.get("/:sid", (req, res) => { 
+router.get("/:sid", async (req, res) => { 
     const id = Number(req.params.sid);
-    const service = manager.getServiceById(id);
+    const service = await manager.getServiceById(id);
 
     if (!service) {
        return res.status(404).json({
@@ -16,11 +16,11 @@ router.get("/:sid", (req, res) => {
     res.status(200).json(service);
 });
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
 
     const category = req.query.category;  
     const available = req.query.available;  
-    let services = manager.getServices();
+    let services = await manager.getServices();
 
     if (category) {
     services = services.filter((service) => {
@@ -36,12 +36,12 @@ router.get("/", (req, res) => {
     res.status(200).json(services);
 });
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
     
     const serviceData = req.body;
     
    try {
-    const newService = manager.addService(serviceData);
+    const newService = await manager.addService(serviceData);
 
     res.status(201).json(newService);
 
@@ -51,11 +51,11 @@ router.post("/", (req, res) => {
     })}
 });
 
-router.put("/:sid", (req,res) => {
+router.put("/:sid", async (req,res) => {
     
     const id = Number(req.params.sid);
     const updateData = req.body;
-    const updatedService = manager.updateService(id, updateData);
+    const updatedService = await manager.updateService(id, updateData);
 
     if (!updatedService){
     return res.status(404).json({
@@ -66,10 +66,10 @@ router.put("/:sid", (req,res) => {
 });
 
 
-router.delete("/:sid", (req, res) => {
+router.delete("/:sid", async (req, res) => {
 
     const id = Number(req.params.sid);
-    const deletedService = manager.deleteService(id);
+    const deletedService = await manager.deleteService(id);
 
     if (!deletedService) {
     return res.status(404).json({

@@ -1,86 +1,108 @@
-import servicesData from "../data/services.json" with { type: "json" };
+import { promises as fs } from "fs";
+import path from "path";
 
+const filePath = path.resolve("src/data/services.json");
 
-class ServiceManager {
-   constructor() {
-    this.services = structuredClone(servicesData);
-   }
+class ServiceManager { 
+   
+    async getServices() {
 
-   getServices() {
-    return this.services;
-   }
+        const data = await fs.readFile(filePath, "utf-8");
+        const services = JSON.parse(data);
 
-    getServiceById(id) {
-    const service = this.services.find(
-        service => service.id === id
-    );
-    return service || null;
+      return services;
     }
 
-    addService(serviceData) {
-    const requiredFields = [
-        "name",
-        "description",
-        "duration",
-        "price",
-        "category",
-        "available"
-    ];
+    async getServiceById(id) {
 
-    const missingFields = requiredFields.filter(
-     field => serviceData[field] === undefined ||
+        const services = await this.getServices();
+        const service = services.find(
+        service => service.id === id
+        );
+
+      return service || null;
+    }
+
+    async addService(serviceData) {
+
+        const services = await this.getServices();
+        const requiredFields = [
+         "name",
+         "description",
+         "duration",
+         "price",
+         "category",
+         "available"
+        ]; 
+
+        const missingFields = requiredFields.filter(
+         field => serviceData[field] === undefined ||
          serviceData[field] === null
-    );
+        );
 
-    if (missingFields.length > 0) {
-    throw new Error(
-      `Faltan campos obligatorios: ${missingFields.join(", ")}`
-    );
+        if (missingFields.length > 0) {
+        throw new Error(
+        `Faltan campos obligatorios: ${missingFields.join(", ")}`
+        )}
+
+        const ids = services.map(service => service.id);
+
+        const newId = ids.length > 0
+           ? Math.max(...ids) + 1
+           : 1;
+
+        const newService = {
+          ...serviceData,
+            id: newId
+        }
+        
+        services.push(newService);
+
+        const data = JSON.stringify(services, null, 2);
+        await fs.writeFile(filePath, data);
+
+        return newService;
     }
 
-    const ids = this.services.map(service => service.id);
+    async updateService(id, updatedData) {
 
-    const newId = ids.length > 0
-        ? Math.max(...ids) + 1
-        : 1;
-
-    const newService = {
-    ...serviceData,
-        id: newId
-    };
-    
-    this.services.push(newService);
-
-    return newService;
-    }
-
-    updateService(id, updatedData) {
-     const service = this.services.find(
+        const services = await this.getServices();
+        const service = services.find(
         service => service.id === id
-     );
-     if (!service) {
-      return null;
-    }
-    const { id: ignoredId, ...safeData } = updatedData;
+        );
 
-    Object.assign(service, safeData);
+        if (!service) {
+        return null;
+        }
 
-    return service;
-    }
+        const { id: ignoredId, ...safeData } = updatedData;
 
-    deleteService(id) {
-    const index = this.services.findIndex(
-    service => service.id === id
-    );
-    if (index === -1) {
-    return null;
+        Object.assign(service, safeData);
+
+        const data = JSON.stringify(services, null, 2);
+        await fs.writeFile(filePath, data);
+
+        return service;
     }
 
-    const deletedServices = this.services.splice(index, 1);
+    async deleteService(id) {
+        
+        const services = await this.getServices();
+        const index = services.findIndex(
+        service => service.id === id
+        );
 
-    return deletedServices[0];
+        if (index === -1) {
+        return null;
+        }
+
+        const deletedServices = services.splice(index, 1);
+
+        const data = JSON.stringify(services, null, 2);
+        await fs.writeFile(filePath, data);
+
+        return deletedServices[0];
   }
-
 }
 
 export default ServiceManager;
