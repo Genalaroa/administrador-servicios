@@ -1,7 +1,6 @@
 import { promises as fs } from "fs";
-import path from "path";
 
-const filePath = path.resolve("src/data/services.json");
+const filePath = new URL("../data/services.json", import.meta.url);
 
 class ServiceManager { 
    

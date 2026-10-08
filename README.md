@@ -1,4 +1,4 @@
-# Administrador de servicios
+## Administrador de servicios
 Este proyecto está hecho con Node.js y express para gestionar los servicios y reservas de un sistema de turnos.
 La API permite consultar, agregar, modificar y eliminar servicios, además de crear reservas y añadir servicios a las mismas.
 Los datos se almacenan mediante FileSystem en archivos JSON, por lo que los cambios persisten aunque el servidor se reinicie.
@@ -29,6 +29,40 @@ npm start
 El servidor se ejecuta en:
 `http://localhost:8080`
 
+## Arquitectura del proyecto
+
+La aplicación está organizada en tres capas principales:
+
+- **Routes (`src/routes/`):** definen los endpoints de la API y conectan cada petición con su controller correspondiente.
+- **Controllers (`src/controllers/`):** reciben las peticiones HTTP, obtienen los parámetros y datos necesarios, llaman a los managers y devuelven las respuestas con sus códigos de estado.
+- **Managers (`src/managers/`):** contienen la lógica de gestión de servicios y reservas, incluyendo la lectura y escritura de los archivos JSON.
+
+Esta separación permite mantener el código organizado y facilita su mantenimiento.
+
+## Estructura principal
+
+```text
+src/
+├── config/
+│   └── env.config.js
+├── controllers/
+│   ├── services.controller.js
+│   └── bookings.controller.js
+├── data/
+│   ├── services.json
+│   └── bookings.json
+├── managers/
+│   ├── ServiceManager.js
+│   └── BookingManager.js
+├── routes/
+│   ├── services.router.js
+│   └── bookings.router.js
+├── app.js
+└── server.js
+```
+
+Los managers utilizan `import.meta.url` para localizar los archivos JSON mediante rutas relativas a sus propios módulos, evitando depender del directorio desde el que se ejecuta el servidor.
+
 ## Servicios
 Los servicios se almacenan en src/data/services.json.
 Cada servicio tiene estos datos:
@@ -43,7 +77,7 @@ Cada servicio tiene estos datos:
 
 ## Endpoints
 
-# GET /api/services
+### GET /api/services
 Devuelve todos los servicios.
 También permite filtrar por categoría y disponibilidad:
 
@@ -52,10 +86,10 @@ GET /api/services?category=Manicura
 GET /api/services?available=true
 ```
 
-# GET /api/services/:sid
+### GET /api/services/:sid
 Devuelve un servicio por su ID.
 
-# POST /api/services
+### POST /api/services
 Crea un nuevo servicio. El ID se genera automáticamente.
 Ejemplo de body:
 
@@ -70,7 +104,7 @@ Ejemplo de body:
 }
 ```
 
-# PUT /api/services/:sid
+### PUT /api/services/:sid
 Actualiza un servicio existente. El ID no se puede modificar.
 Ejemplo de body:
 
@@ -81,7 +115,7 @@ Ejemplo de body:
 }
 ```
 
-# DELETE /api/services/:sid
+### DELETE /api/services/:sid
 Elimina un servicio por su ID.
 
 ## Reservas
@@ -98,7 +132,7 @@ Cada reserva contiene:
 
 ## Endpoints de reservas
 
-# POST /api/bookings
+### POST /api/bookings
 Crea una nueva reserva. El ID se genera automáticamente y la reserva comienza con el array `services` vacío.
 Ejemplo de body:
 
@@ -112,21 +146,17 @@ Ejemplo de body:
 }
 ```
 
-# GET /api/bookings/:bid
+### GET /api/bookings/:bid
 Devuelve una reserva por su ID.
 
-# POST /api/bookings/:bid/services/:sid
+### POST /api/bookings/:bid/services/:sid
 Añade un servicio a una reserva existente.
 Si el servicio todavía no está en la reserva, se añade con cantidad `1`.
 Si el mismo servicio ya existe, se incrementa su cantidad.
 Ejemplo:
 
-```JSON
-{
-  "service": 1,
-  "quantity": 2
-}
-```
+POST /api/bookings/1/services/2
+
 
 ## Persistencia de datos
 La aplicación utiliza FileSystem para leer y escribir los datos en:
@@ -150,3 +180,4 @@ Actualmente se comprueba:
 - Que `getServices()` devuelve un array.
 - Que `getServiceById()` devuelve correctamente un servicio existente.
 - Que `getServiceById()` devuelve `null` cuando el servicio no existe.
+- Que `getServices()` devuelve al menos un servicio.

@@ -28,3 +28,11 @@ test("getServiceById devuelve null si el servicio no existe", async () => {
 
     assert.strictEqual(service, null);
 });
+
+test("getServices devuelve al menos un servicio", async () => {
+    const manager = new ServiceManager();
+
+    const services = await manager.getServices();
+
+    assert.ok(services.length>0);
+});

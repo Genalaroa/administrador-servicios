@@ -1,8 +1,6 @@
 import { promises as fs } from "fs";
-import path from "path";
-import ServiceManager from "./ServiceManager.js";
 
-const filePath = path.resolve("src/data/bookings.json");
+const filePath = new URL("../data/bookings.json", import.meta.url);
 
 class BookingManager { 
 
@@ -51,6 +49,7 @@ class BookingManager {
     }
 
     async getBookingById(id) {
+
         const fileData = await fs.readFile(filePath, "utf-8");
         const bookings = JSON.parse(fileData);
 
@@ -62,18 +61,13 @@ class BookingManager {
     }
 
     async addServiceToBooking(bookingId, serviceId) {
-        const manager = new ServiceManager(); 
+
         const fileData = await fs.readFile(filePath, "utf-8");
         const bookings = JSON.parse(fileData);
-        const service = await manager.getServiceById(serviceId);
         
         const booking = bookings.find(
             booking => booking.id === bookingId
         );
-
-        if (!service) {
-            return null;
-        }
 
         if (!booking) {
             return null;
