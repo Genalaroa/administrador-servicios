@@ -34,6 +34,14 @@ export class ServicesService {
         `Faltan campos obligatorios: ${missingFields.join(", ")}`
         )}
 
+        if (!Number.isFinite(serviceData.price) || serviceData.price <= 0) {
+        throw new Error("El precio debe ser un número mayor que 0");
+        }
+
+        if (!Number.isFinite(serviceData.duration) || serviceData.duration<= 0) {
+        throw new Error("La duración debe ser un número mayor que 0");
+        }
+
         const ids = services.map(service => service.id);
 
         const newId = ids.length > 0
@@ -57,6 +65,17 @@ export class ServicesService {
         }
 
         const { id: ignoredId, ...safeData } = updatedData;
+
+
+        if (safeData.duration !== undefined &&
+            (!Number.isFinite(safeData.duration) || safeData.duration <= 0)) {
+            throw new Error("La duración debe ser un número mayor que 0");
+        }
+
+        if (safeData.price !== undefined &&
+            (!Number.isFinite(safeData.price) || safeData.price <= 0)) {
+            throw new Error("El precio debe ser un número mayor que 0");
+        }       
 
         Object.assign(service, safeData);
 

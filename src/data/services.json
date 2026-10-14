@@ -4,7 +4,7 @@
     "name": "Manicura clásica",
     "description": "Cuidado de uñas con limado y esmaltado tradicional",
     "duration": 30,
-    "price": 18,
+    "price": 30,
     "category": "Manicura",
     "available": true
   },

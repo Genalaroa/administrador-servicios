@@ -68,8 +68,7 @@ src/
 │   ├── services.router.js
 │   └── bookings.router.js
 ├── app.js
-└── server.jsver.js
-
+└── server.js
 
 Los DAO utilizan `import.meta.url` para localizar los archivos JSON mediante rutas relativas a sus propios módulos, evitando depender del directorio desde el que se ejecuta el servidor.
 
@@ -180,7 +179,7 @@ Los cambios realizados en servicios y reservas se guardan en estos archivos, por
 
 ## Tests
 El proyecto incluye una suite sencilla de tests utilizando el módulo de testing nativo de Node.js.
-Los metodos se compruebam de ServicesService
+Los tests comprueban los métodos de ServicesService.
 Para ejecutar los tests:
 
 ```bash
