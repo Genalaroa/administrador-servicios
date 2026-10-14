@@ -178,16 +178,18 @@ src/data/bookings.json
 Los cambios realizados en servicios y reservas se guardan en estos archivos, por lo que los datos persisten después de reiniciar el servidor.
 
 ## Tests
-El proyecto incluye una suite sencilla de tests utilizando el módulo de testing nativo de Node.js.
-Los tests comprueban los métodos de ServicesService.
-Para ejecutar los tests:
+El proyecto utiliza el módulo de testing nativo de Node.js.
 
-```bash
+Para ejecutar las pruebas:
+
 npm test
-```
 
-Actualmente se comprueba:
-- Que `getServices()` devuelve un array.
-- Que `getServiceById()` devuelve correctamente un servicio existente.
-- Que `getServiceById()` devuelve `null` cuando el servicio no existe.
-- Que `getServices()` devuelve al menos un servicio.
+Actualmente incluye 7 tests que comprueban:
+
+* Que getServices() devuelve un array.
+* Que getServiceById() devuelve un servicio existente.
+* Que getServiceById() devuelve null si el servicio no existe.
+* Que getServices() devuelve al menos un servicio.
+* Que createService() rechaza precios negativos.
+* Que createService() rechaza duraciones negativas.
+* Que updateService() rechaza precios negativos.
