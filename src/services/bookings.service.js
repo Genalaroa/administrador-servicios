@@ -1,14 +1,22 @@
-import { promises as fs } from "fs";
+import { BookingsRepository } from "../repositories/bookings.repository.js";
+import { ServicesService } from "./services.service.js";
 
-const filePath = new URL("../data/bookings.json", import.meta.url);
+const repository = new BookingsRepository();
+const servicesService = new ServicesService();
 
-class BookingManager { 
+export class BookingsService {
 
-    async createBooking(bookingData) {
+    async getBookingById(id) {
+        return await repository.getById(id);
+    }
 
-        const fileData = await fs.readFile(filePath, "utf-8");
-        const bookings = JSON.parse(fileData);
+    async getBookings(){
+        return await repository.getAll()
+    }
 
+    async createBooking(bookingData){
+
+        const bookings = await this.getBookings();
         const requiredFields = [ 
             "clientName", 
             "clientEmail", 
@@ -40,38 +48,22 @@ class BookingManager {
             services: []
         };
 
-        bookings.push(newBooking);
-
-        const data = JSON.stringify(bookings, null, 2);
-        await fs.writeFile(filePath, data);
-
-        return newBooking;
-    }
-
-    async getBookingById(id) {
-
-        const fileData = await fs.readFile(filePath, "utf-8");
-        const bookings = JSON.parse(fileData);
-
-        const booking = bookings.find(
-            booking => booking.id === id
-        );
-
-        return booking || null;
+        return await repository.create(newBooking);
     }
 
     async addServiceToBooking(bookingId, serviceId) {
 
-        const fileData = await fs.readFile(filePath, "utf-8");
-        const bookings = JSON.parse(fileData);
+        const service = await servicesService.getServiceById(serviceId);  
+
+        if (!service) {
+            return null;
+        }
         
-        const booking = bookings.find(
-            booking => booking.id === bookingId
-        );
+        const booking = await this.getBookingById(bookingId);
 
         if (!booking) {
             return null;
-        }
+        }     
 
         const existingService = booking.services.find(
             item => item.service === serviceId
@@ -86,11 +78,10 @@ class BookingManager {
             });
         }
 
-        const data = JSON.stringify(bookings, null, 2); 
-        await fs.writeFile(filePath, data);
+        return await repository.update(bookingId, booking);
 
-        return booking;
     }
+     
+
+
 }
- 
-export default BookingManager

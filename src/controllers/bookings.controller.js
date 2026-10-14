@@ -1,15 +1,13 @@
-import BookingManager from "../managers/BookingManager.js";
-import ServiceManager from "../managers/ServiceManager.js";
+import {BookingsService} from "../services/bookings.service.js";
 
-const manager = new BookingManager();
-const serviceManager = new ServiceManager();
+const bookingsService = new BookingsService();
 
 export const createBooking = async (req, res) => { 
 
     const bookingData = req.body; 
 
     try {   
-    const newBooking = await manager.createBooking(bookingData);   
+    const newBooking = await bookingsService.createBooking(bookingData);   
            res.status(201).json(newBooking);   
     } catch (error) {   
         return res.status(400).json({   
@@ -21,7 +19,7 @@ export const createBooking = async (req, res) => {
  export const getBookingById = async (req, res) => {
 
     const id = Number(req.params.bid);
-    const booking = await manager.getBookingById(id);
+    const booking = await bookingsService.getBookingById(id);
 
     if (!booking) {
     return res.status(404).json({
@@ -36,14 +34,8 @@ export const createBooking = async (req, res) => {
 
     const bookingId = Number(req.params.bid);
     const serviceId = Number(req.params.sid);
-    const service = await serviceManager.getServiceById(serviceId);
-
-    if (!service) {
-       return res.status(404).json({
-        "error": "Servicio no encontrado"
-    })}
     
-    const updatedBooking = await manager.addServiceToBooking(bookingId, serviceId);
+    const updatedBooking = await bookingsService.addServiceToBooking(bookingId, serviceId);
 
     if (!updatedBooking) {
     return res.status(404).json({

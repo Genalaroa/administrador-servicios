@@ -31,37 +31,47 @@ El servidor se ejecuta en:
 
 ## Arquitectura del proyecto
 
-La aplicación está organizada en tres capas principales:
+La aplicación utiliza una arquitectura por capas para separar responsabilidades:
 
-- **Routes (`src/routes/`):** definen los endpoints de la API y conectan cada petición con su controller correspondiente.
-- **Controllers (`src/controllers/`):** reciben las peticiones HTTP, obtienen los parámetros y datos necesarios, llaman a los managers y devuelven las respuestas con sus códigos de estado.
-- **Managers (`src/managers/`):** contienen la lógica de gestión de servicios y reservas, incluyendo la lectura y escritura de los archivos JSON.
+* Routes (src/routes/): definen los endpoints y los conectan con los controllers.
+* Controllers (src/controllers/): reciben las peticiones HTTP, gestionan los parámetros y devuelven las respuestas.
+* Services (src/services/): contienen las reglas de negocio, validaciones y generación de identificadores.
+* Repositories (src/repositories/): actúan como intermediarios entre los Services y los DAO.
+* DAO (src/dao/): gestionan el acceso y la persistencia de los datos mediante FileSystem.
 
-Esta separación permite mantener el código organizado y facilita su mantenimiento.
+El flujo de la aplicación es:
+Router → Controller → Service → Repository → DAO → JSON
+
+Esta separación facilita el mantenimiento y permite cambiar el sistema de almacenamiento sin modificar las reglas de negocio.
 
 ## Estructura principal
 
-```text
 src/
 ├── config/
 │   └── env.config.js
 ├── controllers/
 │   ├── services.controller.js
 │   └── bookings.controller.js
+├── services/
+│   ├── services.service.js
+│   └── bookings.service.js
+├── repositories/
+│   ├── services.repository.js
+│   └── bookings.repository.js
+├── dao/
+│   ├── services.dao.js
+│   └── bookings.dao.js
 ├── data/
 │   ├── services.json
 │   └── bookings.json
-├── managers/
-│   ├── ServiceManager.js
-│   └── BookingManager.js
 ├── routes/
 │   ├── services.router.js
 │   └── bookings.router.js
 ├── app.js
-└── server.js
-```
+└── server.jsver.js
 
-Los managers utilizan `import.meta.url` para localizar los archivos JSON mediante rutas relativas a sus propios módulos, evitando depender del directorio desde el que se ejecuta el servidor.
+
+Los DAO utilizan `import.meta.url` para localizar los archivos JSON mediante rutas relativas a sus propios módulos, evitando depender del directorio desde el que se ejecuta el servidor.
 
 ## Servicios
 Los servicios se almacenan en src/data/services.json.
@@ -170,6 +180,7 @@ Los cambios realizados en servicios y reservas se guardan en estos archivos, por
 
 ## Tests
 El proyecto incluye una suite sencilla de tests utilizando el módulo de testing nativo de Node.js.
+Los metodos se compruebam de ServicesService
 Para ejecutar los tests:
 
 ```bash

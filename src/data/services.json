@@ -13,7 +13,7 @@
     "name": "Manicura semipermanente",
     "description": "Manicura con esmaltado semipermanente de larga duración",
     "duration": 60,
-    "price": 28,
+    "price": 12,
     "category": "Manicura",
     "available": true
   },
@@ -22,7 +22,7 @@
     "name": "Manicura acrílica",
     "description": "Extensión y construcción de uñas acrílicas",
     "duration": 90,
-    "price": 55,
+    "price": 40,
     "category": "Manicura",
     "available": true
   },

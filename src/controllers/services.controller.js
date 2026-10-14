@@ -1,11 +1,11 @@
-import ServiceManager from "../managers/ServiceManager.js";
+import { ServicesService } from "../services/services.service.js";
 
-const manager = new ServiceManager();
+const service = new ServicesService();
 
 export const getServices = async (req, res) => {
 const category = req.query.category;  
     const available = req.query.available;  
-    let services = await manager.getServices();
+    let services = await service.getServices();
 
     if (category) {
     services = services.filter((service) => {
@@ -23,20 +23,20 @@ const category = req.query.category;
 
 export const getServiceById = async (req, res) => {   
  const id = Number(req.params.sid);
-    const service = await manager.getServiceById(id);
+    const foundService = await service.getServiceById(id);
 
-    if (!service) {
+    if (!foundService) {
        return res.status(404).json({
         "error": "Servicio no encontrado"
     })}
-    res.status(200).json(service);
+    res.status(200).json(foundService);
 };
 
 export const createService = async (req, res) => { 
     const serviceData = req.body;
     
    try {
-    const newService = await manager.addService(serviceData);
+    const newService = await service.createService(serviceData);
 
     res.status(201).json(newService);
 
@@ -49,7 +49,7 @@ export const createService = async (req, res) => {
 export const updateService = async (req, res) => {
     const id = Number(req.params.sid);
     const updateData = req.body;
-    const updatedService = await manager.updateService(id, updateData);
+    const updatedService = await service.updateService(id, updateData);
 
     if (!updatedService){
     return res.status(404).json({
@@ -61,7 +61,7 @@ export const updateService = async (req, res) => {
 
 export const deleteService = async (req, res) => {
     const id = Number(req.params.sid);
-    const deletedService = await manager.deleteService(id);
+    const deletedService = await service.deleteService(id);
 
     if (!deletedService) {
     return res.status(404).json({
